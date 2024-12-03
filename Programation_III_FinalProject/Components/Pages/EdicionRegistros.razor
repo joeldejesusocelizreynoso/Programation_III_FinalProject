@@ -1,0 +1,145 @@
+﻿@* Joel De Jesús Oseliz Reynoso - 20231132 *@
+@page "/listado/nuevo"
+@page "/listado/editar/{id}"
+@rendermode InteractiveServer
+@inject NavigationManager NavMan
+@inject IJSRuntime JSx
+@using System.Text.Json
+
+<PageTitle>Edición de Registros</PageTitle>
+
+<h1 id="TituloEdicionRegistros" class="fw-bolder text-center mt-5 mb-5">Edición de Registros</h1>
+
+<EditForm Model="@registro" OnValidSubmit="@GuardarRegistro" id="Formulario">
+<DataAnnotationsValidator />
+
+    <div class="row fw-bolder">
+        <div class="col">
+            <div class="mb-3">
+                <label for="Fecha" class="form-label">Fecha</label>
+                <InputDate For="Fecha" id="TextBoxFecha" class="form-control" @bind-Value="@registro.Fecha"/>
+                <ValidationMessage For="@(() => registro.Fecha)" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="Matricula" class="form-label">Matricula</label>
+                <InputText For="Matricula" id="TextBoxMatricula" class="form-control" @bind-Value="@registro.Matricula" />
+                <ValidationMessage For="@(() => registro.Matricula)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row fw-bolder">
+        <div class="col">
+            <div class="mb-3">
+                <label for="Nombre" class="form-label">Nombre</label>
+                <InputText For="Nombre" id="TextBoxNombre" class="form-control" @bind-Value="@registro.Nombre" />
+                <ValidationMessage For="@(() => registro.Nombre)" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="Apellido" class="form-label">Apellido</label>
+                <InputText For="Apellido" id="TextBoxApellido" class="form-control" @bind-Value="@registro.Apellido" />
+                <ValidationMessage For="@(() => registro.Apellido)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row fw-bolder">
+        <div class="col">
+            <div class="mb-3">
+                <label for="Curso" class="form-label">Curso</label>
+                <InputText For="Curso" id="TextBoxCurso" class="form-control" @bind-Value="@registro.Curso" />
+                <ValidationMessage For="@(() => registro.Curso)" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="Motivo" class="form-label">Motivo</label>
+                <InputTextArea For="Motivo" id="TextBoxMotivo" class="form-control" @bind-Value="@registro.Motivo" />
+                <ValidationMessage For="@(() => registro.Motivo)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mb-5">
+        <button id="GuardarDatos" type="submit" class="btn btn-primary fw-bold">Guardar</button>
+        <button id="RegresarListado" class="btn btn-success fw-bold" @onclick="Regresar">Regresar</button>
+        <button id="LimpiarFormulario" class="btn btn-danger fw-bold" @onclick="LimpiarRegistro">limpiar Todo</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+    [Parameter]
+
+    public string? id { get; set; } = null;
+
+    private Reporte registro = new Reporte();
+
+    List<Reporte> registros = new List<Reporte>();
+
+    private void GuardarRegistro()
+    {
+        if (string.IsNullOrEmpty(registro.Id))
+        {
+            registro.Id = Guid.NewGuid().ToString();
+            registros.Add(registro);
+        }
+        else
+        {
+            var index = registros.FindIndex(x => x.Id == registro.Id);
+            registros[index] = registro;
+        }
+
+        JSx.InvokeVoidAsync("localStorage.setItem", "registros", JsonSerializer.Serialize(registros));
+
+        NavMan.NavigateTo("listado");
+    }
+
+    private void Regresar()
+    {
+        NavMan.NavigateTo("listado");
+    }
+
+    private void LimpiarRegistro()
+    {
+        registro.Fecha = DateTime.Now;
+        registro.Matricula = "";
+        registro.Nombre = "";
+        registro.Apellido = "";
+        registro.Curso = "";
+        registro.Motivo = "";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var registrosJson = await JSx.InvokeAsync<string>("localStorage.getItem", "registros");
+
+            if (registrosJson != null)
+            {
+                registros = JsonSerializer.Deserialize<List<Reporte>>(registrosJson);
+
+                if (id != null)
+                {
+                    foreach (var item in registros)
+                    {
+                        if (item.Id == id)
+                        {
+                            registro = item;
+                            break;
+                        }
+                    }
+                }
+
+                StateHasChanged();
+            }
+        }
+    }
+}
+

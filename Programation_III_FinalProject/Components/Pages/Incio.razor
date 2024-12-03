@@ -1,0 +1,63 @@
+﻿@* Joel De Jesús Oseliz Reynoso - 20231132 *@
+
+
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Inicio</PageTitle>
+
+<div class="inicio-container mb-5">
+    <br />
+    <h1 class="fw-bolder" id="TituloBienvenida">Bienvenido al Registro de Tardanzas @* en Blazor Web Assembly *@</h1>
+    <p class="fw-bold">Muchas gracias por visitar mi proyecto. Honestamente espero que disfrutes explorándolo.</p>
+    <blockquote class="fw-bold">La Programación no es solo una habilidad, es una forma de pensar</blockquote>
+
+    <img class="image img-fluid mb-5" src="/Images/Prgramation.gif" alt="Imagen de Programación" />
+</div>
+
+<style>
+    /* === Vista de "Inicio" ===  */
+
+    .inicio-container {
+        text-align: center;
+        margin-top: 50px;
+        color: #333;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .inicio-container h1 {
+            font-size: 2.5em;
+            color: #007bff;
+            transition: color 0.3s ease-in-out;
+        }
+
+            .inicio-container h1:hover {
+                color: #0056b3;
+            }
+
+        .inicio-container p {
+            font-size: 1.2em;
+        }
+
+        .inicio-container blockquote {
+            font-size: italic;
+            color: #6c757d;
+            margin-top: 20px;
+            font-size: 1.5em;
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .inicio-container blockquote:hover {
+                transform: scale(1.05);
+                color: #28a745;
+            }
+
+        .image {
+            width: 500px;
+            height: 400px;
+            border-radius: 10%;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+        }
+</style>
